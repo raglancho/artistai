@@ -1,6 +1,18 @@
+#import streamlit as st
+#import tiktoken
+#from loguru import logger
+
 import streamlit as st
-import tiktoken
 from loguru import logger
+try:
+    from langchain_community.loaders import PyPDFLoader, Docx2txtLoader  # Updated imports needed in newer LangChain versions
+except ImportError:
+    pass
+ from tiktoken import get_encoding 
+
+ #try:
+  #   import pypptx39 as pptx # Newer version of Python-pptx library name is 'pypptx' not 'UnstructuredPowerPointLoader')
+ #except ImportError or AttributeError and file.endswith('.docx'):
 
 from langchain.chains import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
@@ -105,8 +117,15 @@ def get_text(docs):
     for doc in docs:
         file_name = doc.name  # doc 객체의 이름을 파일 이름으로 사용
         with open(file_name, "wb") as file:  # 파일을 doc.name으로 저장
-            file.write(doc.getvalue())
-            logger.info(f"Uploaded {file_name}")
+    
+        try :
+          file.write(doc.getvalue())
+        except UnicodeDecodeError as e:
+            logger.error(f"파일 디코딩 오류: {e}")
+            st.error(f"'{doc.name}' 파일은 UTF-8 인코딩이 아닙니다. 다시 저장 후 업로드 해주세요.")
+
+      #      file.write(doc.getvalue())
+      #      logger.info(f"Uploaded {file_name}")
         if '.pdf' in doc.name:
             loader = PyPDFLoader(file_name)
             documents = loader.load_and_split()
