@@ -103,8 +103,8 @@ def get_text(docs):
     doc_list = []
     
     for doc in docs:
-        file_name = doc.name  # doc °´Ã¼ÀÇ ÀÌ¸§À» ÆÄÀÏ ÀÌ¸§À¸·Î »ç¿ë
-        with open(file_name, "wb") as file:  # ÆÄÀÏÀ» doc.nameÀ¸·Î ÀúÀå
+        file_name = doc.name  # doc ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+        with open(file_name, "wb") as file:  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ doc.nameï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         file.write(doc.getvalue())
         logger.info(f"Uploaded {file_name}")
         if '.pdf' in doc.name:
