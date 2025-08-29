@@ -1,18 +1,20 @@
-# Streamlit 최신 안정버전
+# Streamlit
 streamlit>=1.35.0
 
-# LangChain 코어 & 확장
+# LangChain Core & Community
 langchain==0.2.14
 langchain-community==0.2.12
-langchain-huggingface==0.0.3
 
 # Hugging Face Hub (Inference API 사용)
 huggingface-hub>=0.23.0
 
-# 벡터DB
-faiss-cpu>=1.7.4
+# FAISS (벡터DB)
+faiss-cpu==1.7.4
 
-# 임베딩 모델 (sentence-transformers 계열)
+# Token counting
+tiktoken>=0.7.0
+
+# Sentence Embeddings
 sentence-transformers>=2.7.0
 
 # 문서 처리
