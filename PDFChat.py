@@ -1,5 +1,8 @@
+# This Python file uses the following encoding: utf-8
+import os, sys
 import streamlit as st
 import tiktoken
+
 from loguru import logger
 
 from langchain.chains import ConversationalRetrievalChain
@@ -20,8 +23,8 @@ from langchain.callbacks import get_openai_callback
 from langchain.memory import StreamlitChatMessageHistory
 
 def main():
-    #from dotenv import load_dotenv
-    #load_dotenv()
+    from dotenv import load_dotenv
+    load_dotenv()
 
     st.set_page_config(
     page_title="DirChat",
@@ -103,21 +106,27 @@ def get_text(docs):
     doc_list = []
     
     for doc in docs:
-        file_name = doc.name  # doc ï¿½ï¿½Ã¼ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
-        with open(file_name, "wb") as file:  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ doc.nameï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-        file.write(doc.getvalue())
-        logger.info(f"Uploaded {file_name}")
-        if '.pdf' in doc.name:
-            loader = PyPDFLoader(file_name)
-            documents = loader.load_and_split()
-        elif '.docx' in doc.name:
-            loader = Docx2txtLoader(file_name)
-            documents = loader.load_and_split()
-        elif '.pptx' in doc.name:
-            loader = UnstructuredPowerPointLoader(file_name)
-            documents = loader.load_and_split()
+        file_name = doc.name  # doc °´Ã¼ÀÇ ÀÌ¸§À» ÆÄÀÏ ÀÌ¸§À¸·Î »ç¿ë
+        
+        with open(file_name, "wb") as file:  # ÆÄÀÏÀ» doc.nameÀ¸·Î ÀúÀå
+        
+            file.write(doc.getvalue())
+            logger.info(f"Uploaded {file_name}")
+        
+            if '.pdf' in doc.name:
+            
+                loader = PyPDFLoader(file_name)
+            
+                documents = loader.load_and_split()
+        
+            elif '.docx' in doc.name:
+                loader = Docx2txtLoader(file_name)
+                documents = loader.load_and_split()
+            elif '.pptx' in doc.name:
+                loader = UnstructuredPowerPointLoader(file_name)
+                documents = loader.load_and_split()
 
-        doc_list.extend(documents)
+            doc_list.extend(documents)
     return doc_list
 
 
