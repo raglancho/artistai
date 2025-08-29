@@ -1,13 +1,13 @@
 # This Python file uses the following encoding: utf-8
 import os, sys
-
 import streamlit as st
 import tiktoken
 
 from loguru import logger
 
 from langchain.chains import ConversationalRetrievalChain
-from langchain.chat_models import ChatOpenAI
+# from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import Docx2txtLoader
@@ -107,9 +107,9 @@ def get_text(docs):
     doc_list = []
     
     for doc in docs:
-        file_name = doc.name  # doc ??ü?? ?̸??? ???? ?̸????? ???
+        file_name = doc.name  # doc 
         
-        with open(file_name, "wb") as file:  # ?????? doc.name???? ????
+        with open(file_name, "wb") as file:  # doc.name 
         
             file.write(doc.getvalue())
             logger.info(f"Uploaded {file_name}")
