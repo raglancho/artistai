@@ -1,11 +1,16 @@
-# This Python file uses the following encoding: utf-8
+﻿# This Python file uses the following encoding: utf-8
 import os, sys
 import streamlit as st
 import tiktoken
+import time
+import openai
+
+
 
 from loguru import logger
 
-from langchain.chains import ConversationalRetrievalChain
+#from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import RetrievalQA
 # from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
 
@@ -79,14 +84,24 @@ def main():
         with st.chat_message("assistant"):
             chain = st.session_state.conversation
 
-            with st.spinner("Thinking..."):
-                result = chain({"question": query})
-                with get_openai_callback() as cb:
-                    st.session_state.chat_history = result['chat_history']
-                response = result['answer']
-                source_documents = result['source_documents']
+         #   with st.spinner("Thinking..."):
+         #       result = chain({"question": query})
+         #       with get_openai_callback() as cb:
+         #           st.session_state.chat_history = result['chat_history']
+         #       response = result['answer']
+         #       source_documents = result['source_documents']
 
-                st.markdown(response)
+        with st.spinner("Thinking..."):
+            result = safe_query(st.session_state.conversation, query)
+            response = result["result"]   # RetrievalQA에서는 result 키가 다름
+            
+            if "source_documents" in result:
+                with st.expander("Check sources"):
+                    for doc in result["source_documents"][:3]:
+                        st.markdown(doc.metadata["source"])
+                        st.caption(doc.page_content[:200] + "...")
+                        st.markdown(response)
+
                 with st.expander("Check your Document!!"):
                     st.markdown(source_documents[0].metadata['source'], help = source_documents[0].page_content)
                     st.markdown(source_documents[1].metadata['source'], help = source_documents[1].page_content)
@@ -133,8 +148,8 @@ def get_text(docs):
 
 def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=900,
-        chunk_overlap=100,
+        chunk_size=2000, #900
+        chunk_overlap=200, #100
         length_function=tiktoken_len
     )
     chunks = text_splitter.split_documents(text)
@@ -150,19 +165,44 @@ def get_vectorstore(text_chunks):
     vectordb = FAISS.from_documents(text_chunks, embeddings)
     return vectordb
 
-def get_conversation_chain(vetorestore,openai_api_key):
-    llm = ChatOpenAI(openai_api_key=openai_api_key, model_name = 'gpt-3.5-turbo',temperature=0)
-    conversation_chain = ConversationalRetrievalChain.from_llm(
-            llm=llm, 
-            chain_type="stuff", 
-            retriever=vetorestore.as_retriever(search_type = 'mmr', vervose = True), 
-            memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer'),
-            get_chat_history=lambda h: h,
-            return_source_documents=True,
-            verbose = True
-        )
 
-    return conversation_chain
+#def get_conversation_chain(vetorestore,openai_api_key):
+#    llm = ChatOpenAI(openai_api_key=openai_api_key, model_name = 'gpt-3.5-turbo',temperature=0)
+#    conversation_chain = ConversationalRetrievalChain.from_llm(
+#            llm=llm, 
+#            chain_type="stuff", 
+#            retriever=vetorestore.as_retriever(search_type = 'mmr', vervose = True), 
+#            memory=ConversationBufferMemory(memory_key='chat_history', return_messages=True, output_key='answer'),
+#            get_chat_history=lambda h: h,
+#            return_source_documents=True,
+#            verbose = True
+#        )
+
+#    return conversation_chain
+
+def get_conversation_chain(vetorestore, openai_api_key):
+    llm = ChatOpenAI(
+        openai_api_key=openai_api_key,
+        model_name="gpt-3.5-turbo",
+        temperature=0
+    )
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        retriever=vetorestore.as_retriever(search_type="mmr"),
+        return_source_documents=True
+    )
+    return qa_chain
+
+def safe_query(chain, query):
+    for attempt in range(3):  # 최대 3회 시도
+        try:
+            return chain({"query": query})
+        except openai.RateLimitError:
+            wait_time = 5 * (attempt + 1)
+            st.warning(f"Rate limit 발생 😢 {wait_time}초 대기 후 재시도합니다...")
+            time.sleep(wait_time)
+    raise Exception("Rate limit 계속 발생 - 잠시 후 다시 시도하세요.")
+
 
 
 
