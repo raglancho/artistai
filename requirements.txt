@@ -1,18 +1,32 @@
+# Streamlit 최신 안정버전
 streamlit>=1.35.0
+
+# LangChain 코어 & 확장
 langchain==0.2.14
 langchain-community==0.2.12
 langchain-openai==0.1.8
-openai>=1.3.5
 langchain-huggingface==0.0.3
+
+# OpenAI SDK (필요한 경우 HuggingFaceHub와 병행 사용 가능)
+openai>=1.3.5
+
+# Hugging Face Hub (Inference API 사용)
 huggingface-hub>=0.23.0
 
-faiss-cpu
-tiktoken
-sentence-transformers
-pypdf
-docx2txt
-python-pptx
+# 벡터DB
+faiss-cpu>=1.7.4
 
-loguru
-python-dotenv
+# 토큰 카운팅
+tiktoken>=0.7.0
 
+# 임베딩 모델 (sentence-transformers 계열)
+sentence-transformers>=2.7.0
+
+# 문서 처리
+pypdf>=4.2.0
+docx2txt>=0.8
+python-pptx>=0.6.23
+
+# 유틸
+loguru>=0.7.2
+python-dotenv>=1.0.1
