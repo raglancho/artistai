@@ -7,11 +7,6 @@ import time
 from loguru import logger
 from dotenv import load_dotenv
 
-# Cloud에서는 st.secrets 사용
-hf_token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
-
-# HuggingFaceHub에 자동 적용
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
 
 # LangChain 관련
 from langchain.chains import ConversationalRetrievalChain
@@ -22,19 +17,39 @@ from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import HuggingFaceHub
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+def set_hf_token():
+    hf_token = None
+
+    # 1. Streamlit Cloud 환경 (Secrets 사용)
+    if "HUGGINGFACEHUB_API_TOKEN" in st.secrets:
+        hf_token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
+
+    # 2. 로컬 개발 환경 (.env 사용)
+    else:
+        load_dotenv()
+        hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
+    if not hf_token:
+        st.error("❌ HuggingFace API Token을 찾을 수 없습니다. Secrets 탭이나 .env에 설정하세요.")
+        st.stop()
+
+    os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
+    return hf_token
 
 # =========================
 # Main 함수
 # =========================
 def main():
-    load_dotenv()
+#    load_dotenv()
     st.set_page_config(page_title="PDF/문서 AI Q&A", page_icon="📄", layout="wide")
 
     st.header("📄 문서 업로드 & AI Q&A")
 
     # 업로드
-    uploaded_file = st.file_uploader("문서를 업로드하세요 (PDF, DOCX, PPTX 지원)", type=["pdf", "docx", "pptx"])
-
+    uploaded_file = st.file_uploader("문서를 업로드하세요 (PDF, DOCX, PPTX 지원)", type=["pdf", "docx", "pptx"])   
+    
+    hf_token = set_hf_token()
+    
     if uploaded_file:
         with st.spinner("📑 문서 처리 중..."):
             documents = load_document(uploaded_file)
