@@ -14,15 +14,27 @@ from langchain.chains import RetrievalQA
 # from langchain.chat_models import ChatOpenAI
 from langchain_openai import ChatOpenAI
 
-from langchain.document_loaders import PyPDFLoader
-from langchain.document_loaders import Docx2txtLoader
-from langchain.document_loaders import UnstructuredPowerPointLoader
+#from langchain.document_loaders import PyPDFLoader
+#from langchain.document_loaders import Docx2txtLoader
+#from langchain.document_loaders import UnstructuredPowerPointLoader
+#from langchain.text_splitter import RecursiveCharacterTextSplitter
+#from langchain.embeddings import HuggingFaceEmbeddings
+#from langchain.memory import ConversationBufferMemory
+#from langchain.vectorstores import FAISS
 
+# 기존 langchain -> langchain_community 로 교체
+from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_community.callbacks.manager import get_openai_callback
+from langchain_community.chat_message_histories import StreamlitChatMessageHistory
+
+# langchain core & openai 최신 버전
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain.chains import ConversationalRetrievalChain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
 
-from langchain.memory import ConversationBufferMemory
-from langchain.vectorstores import FAISS
+
 
 # from streamlit_chat import message
 from langchain.callbacks import get_openai_callback
