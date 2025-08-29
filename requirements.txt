@@ -2,7 +2,7 @@ streamlit>=1.35.0
 langchain==0.2.14
 langchain-community==0.2.12
 huggingface-hub>=0.23.0
-faiss-cpu==1.7.4
+faiss-cpu==1.7.4.post2
 sentence-transformers>=2.7.0
 pypdf
 docx2txt
