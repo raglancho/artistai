@@ -1,22 +1,26 @@
 ﻿# This Python file uses the following encoding: utf-8
-import os, sys
+import os
 import streamlit as st
-import tiktoken
 import time
 
 from loguru import logger
 from dotenv import load_dotenv
 
-
 # LangChain 관련
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.document_loaders import PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
+from langchain_community.document_loaders import (
+    PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
+)
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import HuggingFaceHub
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
+
+# =========================
+# Hugging Face 토큰 설정
+# =========================
 def set_hf_token():
     hf_token = None
 
@@ -36,20 +40,20 @@ def set_hf_token():
     os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_token
     return hf_token
 
+
 # =========================
 # Main 함수
 # =========================
 def main():
-#    load_dotenv()
     st.set_page_config(page_title="PDF/문서 AI Q&A", page_icon="📄", layout="wide")
-
     st.header("📄 문서 업로드 & AI Q&A")
 
-    # 업로드
-    uploaded_file = st.file_uploader("문서를 업로드하세요 (PDF, DOCX, PPTX 지원)", type=["pdf", "docx", "pptx"])   
-    
+    # API Token 설정
     hf_token = set_hf_token()
-    
+
+    # 문서 업로드
+    uploaded_file = st.file_uploader("문서를 업로드하세요 (PDF, DOCX, PPTX 지원)", type=["pdf", "docx", "pptx"])
+
     if uploaded_file:
         with st.spinner("📑 문서 처리 중..."):
             documents = load_document(uploaded_file)
@@ -104,7 +108,7 @@ def safe_query(chain, query, max_retries=3):
 def get_conversation_chain(vectorstore):
     # HuggingFaceHub LLM 불러오기 (Inference API)
     llm = HuggingFaceHub(
-        repo_id="HuggingFaceH4/zephyr-7b-beta",   # 권장 무료 모델
+        repo_id="HuggingFaceH4/zephyr-7b-beta",   # 무료 권장 모델
         model_kwargs={"temperature": 0.3, "max_new_tokens": 512}
     )
 
