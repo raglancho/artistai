@@ -12,3 +12,4 @@ docx2txt
 python-pptx
 
 loguru
+python-dotenv
