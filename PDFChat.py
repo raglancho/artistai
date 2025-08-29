@@ -1,5 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import os, sys
+
 import streamlit as st
 import tiktoken
 
@@ -106,9 +107,9 @@ def get_text(docs):
     doc_list = []
     
     for doc in docs:
-        file_name = doc.name  # doc 객체의 이름을 파일 이름으로 사용
+        file_name = doc.name  # doc ??체?? ?見??? ???? ?見????? ???
         
-        with open(file_name, "wb") as file:  # 파일을 doc.name으로 저장
+        with open(file_name, "wb") as file:  # ?????? doc.name???? ????
         
             file.write(doc.getvalue())
             logger.info(f"Uploaded {file_name}")
