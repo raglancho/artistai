@@ -88,19 +88,19 @@ def safe_query(chain, query, max_retries=3):
 # =========================
 def get_conversation_chain(vectorstore):
    
-     llm = HuggingFaceHub(
+    llm = HuggingFaceHub(
         repo_id="HuggingFaceH4/zephyr-7b-beta",   # 무료 추천 모델
         model_kwargs={
             "temperature": 0.3,
             "max_new_tokens": 256
         }
-     )
+    )
     memory = ConversationBufferMemory(
         memory_key="chat_history",
         return_messages=True,
         output_key="answer"
     )
-
+    
     return ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=vectorstore.as_retriever(search_type="mmr"),
