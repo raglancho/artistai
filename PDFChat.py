@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 # LangChain 관련
 from langchain.chains import ConversationalRetrievalChain
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint
+# from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint
 from langchain_community.vectorstores import LanceDB
 from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -24,9 +24,6 @@ from dotenv import load_dotenv
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_huggingface import HuggingFaceEndpoint
 
-
-
-hf_token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 
 # =========================
@@ -155,7 +152,7 @@ def main():
                 vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
 
             # table = db.open_table("docs") if "docs" in db.table_names() else db.create_table("docs", data=None)
-            vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
+            # vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
 
             st.session_state.conversation = get_conversation_chain(vectorstore)
             st.success("✅ 문서 처리 완료! 이제 질문할 수 있습니다.")
