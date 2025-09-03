@@ -21,7 +21,7 @@ from langchain_community.document_loaders import (
 from loguru import logger
 from dotenv import load_dotenv
 
-#from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_huggingface import HuggingFaceEndpoint
 from langchain_community.llms import HuggingFaceHub 
 
@@ -87,12 +87,14 @@ def safe_query(chain, query, max_retries=3):
 # 대화 체인
 # =========================
 def get_conversation_chain(vectorstore):
-    llm = HuggingFaceHub(
+   
+     llm = HuggingFaceHub(
         repo_id="HuggingFaceH4/zephyr-7b-beta",   # 무료 추천 모델
         model_kwargs={
             "temperature": 0.3,
             "max_new_tokens": 256
-    }
+        }
+     )
     memory = ConversationBufferMemory(
         memory_key="chat_history",
         return_messages=True,
