@@ -10,20 +10,28 @@ from dotenv import load_dotenv
 
 # LangChain 관련
 from langchain.chains import ConversationalRetrievalChain
-# from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint
+
 from langchain_community.vectorstores import LanceDB
 from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import (
     PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
 )
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+#from langchain_huggingface import HuggingFaceEndpoint
+from langchain_community.llms import HuggingFaceHub 
+
+# LangChain 관련
+
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceHub
+
+
+
 
 from loguru import logger
 from dotenv import load_dotenv
 
-# from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_huggingface import HuggingFaceEndpoint
-from langchain_community.llms import HuggingFaceHub 
 
 
 # =========================
