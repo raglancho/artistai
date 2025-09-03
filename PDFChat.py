@@ -14,7 +14,9 @@ from langchain_community.document_loaders import (
     PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
 )
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import FAISS
+# from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores import Chroma
+
 from langchain.memory import ConversationBufferMemory
 from langchain_community.llms import HuggingFaceHub
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -68,7 +70,9 @@ def main():
 
             # 임베딩 생성
             embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-            vectorstore = FAISS.from_documents(docs, embeddings)
+            #vectorstore = FAISS.from_documents(docs, embeddings)
+
+            vectorstore = Chroma.from_documents(docs, embeddings)
 
             # 대화 체인 생성
             st.session_state.conversation = get_conversation_chain(vectorstore)
