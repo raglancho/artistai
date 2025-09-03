@@ -11,8 +11,10 @@ from dotenv import load_dotenv
 # LangChain 관련
 # LangChain 관련
 from langchain.chains import ConversationalRetrievalChain
-from langchain_community.embeddings import HuggingFaceEmbeddings
+#from langchain_community.embeddings import HuggingFaceEmbeddings
 #from langchain_community.llms import HuggingFaceHub
+from langchain_huggingface import HuggingFaceEmbeddings
+
 from langchain_community.vectorstores import LanceDB
 from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -145,7 +147,6 @@ def get_conversation_chain(vectorstore):
         return_source_documents=True,
         verbose=True,
     )
-
 
 
 # =========================
