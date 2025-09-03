@@ -1,25 +1,16 @@
-# Streamlit
-streamlit>=1.35.0
+ï»¿streamlit>=1.35.0
 
-# LangChain Core & Integrations
 langchain==0.2.14
 langchain-community==0.2.12
 langchain-huggingface==0.0.3
 
-# Hugging Face Hub (Inference API)
 huggingface-hub>=0.23.0
-
-# LanceDB (DuckDB ±â¹Ý Vector DB)
 lancedb>=0.5.7
-
-# Sentence Transformers (ÀÓº£µù ¸ðµ¨)
 sentence-transformers>=2.7.0
 
-# ¹®¼­ Ã³¸®
 pypdf>=4.2.0
 docx2txt>=0.8
 python-pptx>=0.6.23
 
-# À¯Æ¿
 loguru>=0.7.2
 python-dotenv>=1.0.1
