@@ -72,13 +72,15 @@ def load_document(uploaded_file):
 # =========================
 def safe_query(chain, query, max_retries=3):
     for attempt in range(max_retries):
+        last_error = None
         try:
             return chain.invoke({"question": query})
         except Exception as e:
+            last_error = e
             wait_time = 5 * (attempt + 1)
             st.warning(f"⚠️ API 에러 발생: {e}\n{wait_time}초 후 재시도...")
             time.sleep(wait_time)
-    raise Exception(f"❌ API 호출 실패: {str(e)}")
+    raise Exception(f"❌ API 호출 실패 - 잠시 후 다시 시도해주세요. (원인: {last_error})")
 
 
 # =========================
