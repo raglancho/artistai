@@ -153,12 +153,19 @@ def main():
             embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
             # 🔹 기존 테이블이 있으면 추가, 없으면 새로 생성
-            if "docs" in db.table_names():
-                table = db.open_table("docs")
-                table.add(docs)
-            else:
-                table = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
+            #if "docs" in db.table_names():
+            #    table = db.open_table("docs")
+            #    table.add(docs)
+            #else:
+            #    table = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
 
+
+            # 🔹 LanceDB 벡터스토어에 저장
+            if "docs" in db.table_names():
+                vectorstore = LanceDB(connection=db, table_name="docs", embedding=embeddings)
+                vectorstore.add_documents(docs)
+            else:
+                vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
 
             # table = db.open_table("docs") if "docs" in db.table_names() else db.create_table("docs", data=None)
             vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
