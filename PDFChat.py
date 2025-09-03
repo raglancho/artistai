@@ -3,6 +3,8 @@ import os
 import streamlit as st
 import time
 import tempfile
+# LanceDB
+import lancedb
 
 from dotenv import load_dotenv
 
@@ -16,29 +18,15 @@ from langchain_community.document_loaders import (
     PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
 )
 
-
-# =========================
-# This Python file uses the following encoding: utf-8
-import os
-import streamlit as st
-import tempfile
-import time
 from loguru import logger
 from dotenv import load_dotenv
 
-# LangChain
-from langchain.chains import ConversationalRetrievalChain
-from langchain_community.document_loaders import (
-    PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
-)
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain.memory import ConversationBufferMemory
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEndpoint
 
-# LanceDB
-import lancedb
-from langchain_community.vectorstores import LanceDB
+
+
+hf_token = st.secrets["HUGGINGFACEHUB_API_TOKEN"]
 
 
 # =========================
@@ -104,8 +92,9 @@ def get_conversation_chain(vectorstore):
         repo_id="HuggingFaceH4/zephyr-7b-beta",  # 무료 추천 모델
         temperature=0.3,
         max_new_tokens=256,
+        huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")  # ✅ 토큰 꼭 설정
     )
-
+ 
     memory = ConversationBufferMemory(
         memory_key="chat_history",
         return_messages=True,
