@@ -78,7 +78,7 @@ def safe_query(chain, query, max_retries=3):
             wait_time = 5 * (attempt + 1)
             st.warning(f"⚠️ API 에러 발생: {e}\n{wait_time}초 후 재시도...")
             time.sleep(wait_time)
-    raise Exception("❌ API 호출 실패 - 잠시 후 다시 시도해주세요.")
+    raise Exception(f"❌ API 호출 실패: {str(e)}")
 
 
 # =========================
@@ -86,7 +86,7 @@ def safe_query(chain, query, max_retries=3):
 # =========================
 def get_conversation_chain(vectorstore):
     llm = HuggingFaceEndpoint(
-        repo_id="HuggingFaceH4/zephyr-7b-beta",  # 무료 추천 모델
+        repo_id="mistralai/Mistral-7B-Instruct-v0.2", 
         temperature=0.3,
         max_new_tokens=256,
         huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN")  # ✅ 토큰 꼭 설정
