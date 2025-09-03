@@ -71,8 +71,8 @@ def load_document(uploaded_file):
 # 안전한 질의
 # =========================
 def safe_query(chain, query, max_retries=3):
+    last_error = None
     for attempt in range(max_retries):
-        last_error = None
         try:
             return chain.invoke({"question": query})
         except Exception as e:
