@@ -15,7 +15,9 @@ from langchain.chains import ConversationalRetrievalChain
 from langchain_community.document_loaders import (
     PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
 )
-from langchain_community.embeddings import HuggingFaceEmbeddings
+# from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_huggingface import HuggingFaceEndpoint  
+
 # from langchain_community.vectorstores import FAISS
 from langchain_community.vectorstores import Chroma
 
@@ -108,23 +110,32 @@ def main():
 # =========================
 # 안전한 질의 함수
 # =========================
+# def safe_query(chain, query, max_retries=3):
+#     for attempt in range(max_retries):
+#         try:
+#             return chain({"question": query})
+#         except Exception as e:
+#             wait_time = 5 * (attempt + 1)
+#             st.warning(f"⚠️ API 에러 발생: {e}\n{wait_time}초 후 재시도합니다...")
+#             time.sleep(wait_time)
+#     raise Exception("❌ API 호출 실패 - 잠시 후 다시 시도해주세요.")
+
 def safe_query(chain, query, max_retries=3):
     for attempt in range(max_retries):
         try:
-            return chain({"question": query})
+            return chain.invoke({"question": query})   # ✅ invoke 로 교체
         except Exception as e:
             wait_time = 5 * (attempt + 1)
             st.warning(f"⚠️ API 에러 발생: {e}\n{wait_time}초 후 재시도합니다...")
             time.sleep(wait_time)
     raise Exception("❌ API 호출 실패 - 잠시 후 다시 시도해주세요.")
 
-
 # =========================
 # 대화 체인 생성
 # =========================
 def get_conversation_chain(vectorstore):
     # HuggingFaceHub LLM 불러오기 (Inference API)
-    llm = HuggingFaceHub(
+    llm = HuggingFaceEndpoint(
         repo_id="HuggingFaceH4/zephyr-7b-beta",   # 무료 권장 모델
         model_kwargs={"temperature": 0.3, "max_new_tokens": 512}
     )
