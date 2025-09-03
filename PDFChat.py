@@ -163,7 +163,7 @@ def main():
 
 
             # table = db.open_table("docs") if "docs" in db.table_names() else db.create_table("docs", data=None)
-            # vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
+            vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
 
             st.session_state.conversation = get_conversation_chain(vectorstore)
             st.success("✅ 문서 처리 완료! 이제 질문할 수 있습니다.")
