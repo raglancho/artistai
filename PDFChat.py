@@ -72,7 +72,16 @@ def main():
             embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
             #vectorstore = FAISS.from_documents(docs, embeddings)
 
-            vectorstore = Chroma.from_documents(docs, embeddings)
+            # vectorstore = Chroma.from_documents(docs, embeddings)
+
+            db = lancedb.connect("duckdb_storage")  # DuckDB 파일 기반 DB
+            table_name = "docs"
+
+            if table_name in db.table_names():
+                vectorstore = LanceDB(connection=db, table_name=table_name, embedding=embeddings)
+                vectorstore.add_documents(docs)
+            else:
+                vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name=table_name)
 
             # 대화 체인 생성
             st.session_state.conversation = get_conversation_chain(vectorstore)
