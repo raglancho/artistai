@@ -145,11 +145,25 @@ def main():
 
             text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
             docs = text_splitter.split_documents(documents)
+            
+            if not docs:
+                st.error("❌ 문서에서 텍스트를 추출하지 못했습니다. 다른 파일을 업로드해주세요.")
+            return
+
+ 
 
             embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
-            table = db.open_table("docs") if "docs" in db.table_names() else db.create_table("docs", data=None)
-            vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
+            # 🔹 기존 테이블이 있으면 추가, 없으면 새로 생성
+            if "docs" in db.table_names():
+                table = db.open_table("docs")
+                table.add(docs)
+            else:
+                table = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
+
+
+            # table = db.open_table("docs") if "docs" in db.table_names() else db.create_table("docs", data=None)
+            # vectorstore = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
 
             st.session_state.conversation = get_conversation_chain(vectorstore)
             st.success("✅ 문서 처리 완료! 이제 질문할 수 있습니다.")
