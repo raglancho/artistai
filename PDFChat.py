@@ -4,6 +4,8 @@ import streamlit as st
 import time
 
 import tempfile
+import lancedb   # ✅ DuckDB 기반 LanceDB 연결 라이브러리
+from langchain_community.vectorstores import LanceDB
 
 from loguru import logger
 from dotenv import load_dotenv
