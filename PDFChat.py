@@ -12,14 +12,14 @@ from dotenv import load_dotenv
 # LangChain 관련
 from langchain.chains import ConversationalRetrievalChain
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.llms import HuggingFaceHub
+#from langchain_community.llms import HuggingFaceHub
 from langchain_community.vectorstores import LanceDB
 from langchain.memory import ConversationBufferMemory
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import (
     PyPDFLoader, Docx2txtLoader, UnstructuredPowerPointLoader
 )
-
+from langchain_huggingface import HuggingFaceEndpoint
 
 from loguru import logger
 from dotenv import load_dotenv
@@ -86,6 +86,7 @@ def safe_query(chain, query, max_retries=3):
 # =========================
 # 대화 체인
 # =========================
+'''
 def get_conversation_chain(vectorstore):
    
     #llm = HuggingFaceHub(
@@ -118,6 +119,34 @@ def get_conversation_chain(vectorstore):
         return_source_documents=True,
         verbose=True
     )
+'''
+def get_conversation_chain(vectorstore):
+    llm = HuggingFaceEndpoint(
+        repo_id="HuggingFaceH4/zephyr-7b-beta",
+        temperature=0.3,
+        max_new_tokens=256,
+        huggingfacehub_api_token=os.getenv("HUGGINGFACEHUB_API_TOKEN"),
+        # 아래 두 옵션은 가끔 필요한 경우가 있어 함께 권장합니다.
+        timeout=60,
+        max_retries=2,
+    )
+
+    memory = ConversationBufferMemory(
+        memory_key="chat_history",
+        return_messages=True,
+        output_key="answer",
+    )
+
+    return ConversationalRetrievalChain.from_llm(
+        llm=llm,
+        retriever=vectorstore.as_retriever(search_type="mmr"),
+        memory=memory,
+        get_chat_history=lambda h: h,
+        return_source_documents=True,
+        verbose=True,
+    )
+
+
 
 # =========================
 # Main
