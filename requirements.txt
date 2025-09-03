@@ -1,16 +1,25 @@
+# Streamlit
 streamlit>=1.35.0
+
+# LangChain Core & Integrations
 langchain==0.2.14
 langchain-community==0.2.12
+langchain-huggingface==0.0.3
 
-# huggingface-hub>=0.23.0
+# Hugging Face Hub (Inference API)
+huggingface-hub>=0.23.0
 
-langchain-huggingface>=0.0.3
+# LanceDB (DuckDB 기반 Vector DB)
+lancedb>=0.5.7
 
-lancedb>=0.4.3 
-
+# Sentence Transformers (임베딩 모델)
 sentence-transformers>=2.7.0
-pypdf
-docx2txt
-python-pptx
-loguru
-python-dotenv
+
+# 문서 처리
+pypdf>=4.2.0
+docx2txt>=0.8
+python-pptx>=0.6.23
+
+# 유틸
+loguru>=0.7.2
+python-dotenv>=1.0.1
