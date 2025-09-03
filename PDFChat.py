@@ -148,9 +148,7 @@ def main():
             
             if not docs:
                 st.error("❌ 문서에서 텍스트를 추출하지 못했습니다. 다른 파일을 업로드해주세요.")
-            return
-
- 
+                return
 
             embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
@@ -167,7 +165,6 @@ def main():
 
             st.session_state.conversation = get_conversation_chain(vectorstore)
             st.success("✅ 문서 처리 완료! 이제 질문할 수 있습니다.")
-
     # Q&A 영역
     if "conversation" in st.session_state:
         query = st.text_input("질문을 입력하세요:")
