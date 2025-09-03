@@ -103,7 +103,7 @@ def get_conversation_chain(vectorstore):
     llm = HuggingFaceEndpoint(
         repo_id="HuggingFaceH4/zephyr-7b-beta",  # 무료 추천 모델
         temperature=0.3,
-        max_new_tokens=512,
+        max_new_tokens=256,
     )
 
     memory = ConversationBufferMemory(
@@ -120,7 +120,6 @@ def get_conversation_chain(vectorstore):
         return_source_documents=True,
         verbose=True
     )
-
 
 # =========================
 # Main
@@ -158,7 +157,6 @@ def main():
             #    table.add(docs)
             #else:
             #    table = LanceDB.from_documents(docs, embeddings, connection=db, table_name="docs")
-
 
             # 🔹 LanceDB 벡터스토어에 저장
             if "docs" in db.table_names():
