@@ -3,6 +3,8 @@ import os
 import streamlit as st
 import time
 
+import tempfile
+
 from loguru import logger
 from dotenv import load_dotenv
 
@@ -132,15 +134,38 @@ def get_conversation_chain(vectorstore):
 # =========================
 # 문서 로드 함수
 # =========================
+# def load_document(uploaded_file):
+#    name, ext = os.path.splitext(uploaded_file.name.lower())
+
+#   if ext == ".pdf":
+#        loader = PyPDFLoader(uploaded_file)
+#    elif ext in [".docx", ".doc"]:
+#        loader = Docx2txtLoader(uploaded_file)
+#    elif ext in [".pptx", ".ppt"]:
+#        loader = UnstructuredPowerPointLoader(uploaded_file)
+#    else:
+#        st.error("지원하지 않는 파일 형식입니다. (pdf, docx, pptx 지원)")
+#        return None
+#
+#    return loader.load()
+
+
+# import tempfile
+
 def load_document(uploaded_file):
     name, ext = os.path.splitext(uploaded_file.name.lower())
 
+    # UploadedFile -> temp file path
+    with tempfile.NamedTemporaryFile(delete=False, suffix=ext) as tmp:
+        tmp.write(uploaded_file.read())
+        tmp_path = tmp.name
+
     if ext == ".pdf":
-        loader = PyPDFLoader(uploaded_file)
+        loader = PyPDFLoader(tmp_path)
     elif ext in [".docx", ".doc"]:
-        loader = Docx2txtLoader(uploaded_file)
+        loader = Docx2txtLoader(tmp_path)
     elif ext in [".pptx", ".ppt"]:
-        loader = UnstructuredPowerPointLoader(uploaded_file)
+        loader = UnstructuredPowerPointLoader(tmp_path)
     else:
         st.error("지원하지 않는 파일 형식입니다. (pdf, docx, pptx 지원)")
         return None
